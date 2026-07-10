@@ -2,11 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NEXUS</title>
-  <meta http-equiv="refresh" content="0; url=effect.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS · Booting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="vaporwave.css" rel="stylesheet">
+  <meta http-equiv="refresh" content="1; url=effect.html">
   <script>window.location.replace('effect.html');</script>
+  <style>
+    body { min-height:100vh; display:grid; place-items:center; overflow:hidden; color:#e0e0e0; }
+    .boot { position:relative; z-index:2; width:min(90vw,520px); border:2px solid #00ffff; background:rgba(4,0,12,.88); box-shadow:0 0 30px rgba(0,255,255,.3); }
+    .bar { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; color:#00ffff; border-bottom:1px solid #00ffff; font-size:11px; letter-spacing:2px; }
+    .dots { color:#ff00ff; letter-spacing:5px; }
+    .body { padding:30px; text-align:center; }
+    h1 { margin:0; font:900 clamp(42px,12vw,72px)/1 Orbitron,sans-serif; letter-spacing:.16em; background:linear-gradient(90deg,#ff9900,#ff00ff,#00ffff); -webkit-background-clip:text; color:transparent; }
+    p { margin:18px 0 0; font-size:13px; letter-spacing:.16em; color:#00ffff; }
+    a { color:#ff00ff; }
+  </style>
 </head>
 <body>
-  <p>Loading NEXUS… if nothing happens, <a href="effect.html">click here</a>.</p>
+  <main class="boot" aria-live="polite">
+    <div class="bar"><span>› NEXUS://BOOT</span><span class="dots">● ● ●</span></div>
+    <div class="body"><h1>NEXUS</h1><p>LOADING ENTRY SEQUENCE…</p><p><a href="effect.html">ENTER MANUALLY →</a></p></div>
+  </main>
 </body>
 </html>

@@ -1,0 +1,177 @@
+/* NEXUS Vaporwave / Outrun design system — shared by every public surface. */
+:root {
+  --bg-void: #090014 !important;
+  --bg-deep: #120524 !important;
+  --bg-card: rgba(26, 16, 60, .82) !important;
+  --bg-card-hover: rgba(43, 12, 76, .9) !important;
+  --card-bg: rgba(26, 16, 60, .82) !important;
+  --glass-border: rgba(255, 0, 255, .28) !important;
+  --glass-border-hover: #00ffff !important;
+  --border-muted: #2d1b4e !important;
+  --cyan: #00ffff !important;
+  --cyan-dim: rgba(0, 255, 255, .45) !important;
+  --cyan-glow: 0 0 18px rgba(0, 255, 255, .42), 0 0 48px rgba(255, 0, 255, .16) !important;
+  --green: #00ffff !important;
+  --green-dim: rgba(0, 255, 255, .45) !important;
+  --purple: #ff00ff !important;
+  --pink: #ff00ff !important;
+  --magenta: #ff00ff !important;
+  --orange: #ff9900 !important;
+  --gold: #ff9900 !important;
+  --text: #e0e0e0 !important;
+  --fg-chrome: #e0e0e0 !important;
+  --text-secondary: rgba(224, 224, 224, .68) !important;
+  --text-muted: rgba(224, 224, 224, .44) !important;
+  --radius: 0 !important;
+  --radius-sm: 0 !important;
+  --radius-xs: 0 !important;
+}
+
+html { background: #090014; }
+body { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; background: #090014 !important; }
+button, input, select, textarea { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+button, a, select { -webkit-tap-highlight-color: transparent; }
+
+/* Atmospheric layers, intentionally non-interactive. */
+body::before {
+  content: '';
+  position: fixed;
+  width: min(72vw, 680px);
+  aspect-ratio: 1;
+  top: -26vh;
+  left: 50%;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #ff9900, #ff00ff 58%, transparent 75%);
+  filter: blur(80px);
+  opacity: .2;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background: linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,.22) 50%), linear-gradient(90deg, rgba(255,0,0,.025), transparent 45%, rgba(0,255,255,.025));
+  background-size: 100% 4px, 100% 100%;
+}
+
+/* Entry sequence */
+.grid-overlay {
+  background-image: linear-gradient(transparent 95%, rgba(255, 0, 255, .38) 95%), linear-gradient(90deg, transparent 95%, rgba(255, 0, 255, .38) 95%) !important;
+  background-size: 42px 42px !important;
+  mask-image: linear-gradient(to bottom, transparent, #000 55%) !important;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 55%) !important;
+  transform: perspective(520px) rotateX(58deg) translateY(18%) scale(1.5);
+  transform-origin: bottom center;
+  opacity: .72;
+}
+.logo-glitch, .logo-main, .nexus-logo h1, .nav-logo {
+  background: linear-gradient(90deg, #ff9900, #ff00ff 52%, #00ffff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 0 18px rgba(255,0,255,.65));
+}
+.logo-sub, .nexus-logo .subtitle { color: #ff00ff !important; letter-spacing: .26em !important; }
+.logo-tagline, .status-msg, .key-hint, .version-badge { color: rgba(224,224,224,.7) !important; }
+.enter-btn, .cta-btn, .hdr-btn, .nav-export-btn, .nav-share-btn {
+  border-radius: 0 !important;
+  border: 2px solid #00ffff !important;
+  color: #00ffff !important;
+  background: rgba(0,0,0,.38) !important;
+  box-shadow: 0 0 16px rgba(0,255,255,.18) !important;
+  transform: skewX(-10deg);
+  transition: transform .2s linear, background .2s linear, color .2s linear, box-shadow .2s linear !important;
+}
+.enter-btn:hover, .cta-btn:hover, .hdr-btn:hover, .nav-export-btn:hover, .nav-share-btn:hover {
+  transform: skewX(0deg) translateY(-2px) !important;
+  background: #00ffff !important;
+  color: #090014 !important;
+  box-shadow: 0 0 28px #00ffff, 0 0 54px rgba(255,0,255,.4) !important;
+}
+.enter-btn .btn-text, .cta-btn .btn-inner { transform: skewX(10deg); }
+.enter-btn:hover .btn-text, .cta-btn:hover .btn-inner { transform: skewX(0deg); }
+
+/* Auth terminal */
+.terminal-window {
+  border-color: #00ffff !important;
+  background: rgba(4, 0, 12, .9) !important;
+  box-shadow: 0 0 28px rgba(0,255,255,.3), inset 0 0 40px rgba(255,0,255,.05) !important;
+}
+.title-bar { background: rgba(0,255,255,.1) !important; }
+.status-bar { background: #090014 !important; }
+.field-input, .otp-box {
+  border-radius: 0 !important;
+  background: #050008 !important;
+}
+
+/* Simulator chrome and high-value interaction surfaces. */
+#sticky-nav {
+  background: rgba(9,0,20,.88) !important;
+  border-bottom: 2px solid #2d1b4e !important;
+  box-shadow: 0 5px 28px rgba(0,0,0,.5) !important;
+}
+#sticky-nav.scrolled { border-bottom-color: #00ffff !important; box-shadow: 0 0 24px rgba(0,255,255,.18) !important; }
+.nav-link { border-radius: 0 !important; color: rgba(224,224,224,.62) !important; }
+.nav-link:hover, .nav-link.active { color: #00ffff !important; background: rgba(0,255,255,.09) !important; border-color: #00ffff !important; }
+#progress-bar { background: linear-gradient(90deg, #ff00ff, #ff9900, #00ffff) !important; box-shadow: 0 0 10px #00ffff !important; }
+.hero-header { border-bottom: 1px solid rgba(255,0,255,.34); }
+.h-badge, .eco-live-badge, .ai-badge, .split-badge {
+  border-radius: 0 !important;
+  border-color: #ff00ff !important;
+  background: rgba(255,0,255,.1) !important;
+  color: #ff00ff !important;
+}
+.section-label, .section-num, .avatar-label, .eco-panel-title { color: #ff00ff !important; }
+.section-title-text, .chart-title, .impact-title-lg, .method-title, .ring-name { color: #00ffff !important; text-shadow: 0 0 8px rgba(0,255,255,.65); }
+.section-line { background: linear-gradient(90deg, #ff00ff, #00ffff, transparent) !important; }
+.glass-panel, .eco-panel, .metric-card, .ring-card, .split-card, .insight-card, .method-card, .snapshot-card, .impact-block {
+  border-radius: 0 !important;
+  border: 1px solid rgba(255,0,255,.38) !important;
+  border-top: 2px solid #00ffff !important;
+  background: rgba(26,16,60,.84) !important;
+  box-shadow: inset 0 1px 0 rgba(0,255,255,.12), 0 12px 34px rgba(0,0,0,.22) !important;
+}
+.glass-panel:hover, .metric-card:hover, .ring-card:hover, .insight-card:hover, .method-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: #00ffff !important;
+  box-shadow: 0 0 22px rgba(0,255,255,.22), 0 0 44px rgba(255,0,255,.12) !important;
+}
+.field-input, .country-select {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-bottom: 2px solid #ff00ff !important;
+  background: #050008 !important;
+  color: #00ffff !important;
+}
+.field-input:focus, .country-select:focus { border-bottom-color: #00ffff !important; box-shadow: 0 7px 18px rgba(0,255,255,.2) !important; }
+.country-select option { background: #1a103c; color: #e0e0e0; }
+.cta-btn { background: transparent !important; }
+.cta-btn:hover { background: #00ffff !important; }
+.risk-banner, .share-toast, .chart-tooltip {
+  border-radius: 0 !important;
+  border: 1px solid #00ffff !important;
+  background: rgba(9,0,20,.94) !important;
+  box-shadow: 0 0 20px rgba(0,255,255,.24) !important;
+}
+.tracker-dot.active .tracker-dot-inner, .tracker-dot:hover .tracker-dot-inner { background: #ff00ff !important; box-shadow: 0 0 10px #ff00ff !important; }
+.tracker-label { color: #00ffff !important; }
+.method-formula, .eco-source-badge, .currency-btn.active { border-radius: 0 !important; border-color: #00ffff !important; color: #00ffff !important; background: rgba(0,255,255,.08) !important; }
+
+@media (max-width: 760px) {
+  #sticky-nav { padding: 0 12px !important; }
+  .nav-links { display: none !important; }
+  .nav-right { gap: 4px !important; }
+  .nav-right button { padding: 7px 8px !important; font-size: 8px !important; }
+  #section-tracker { display: none !important; }
+  .hero-header { padding-top: 92px !important; }
+  .logo-main { font-size: clamp(42px, 15vw, 76px) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
