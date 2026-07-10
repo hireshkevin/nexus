@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/",                    "destination": "/public/effect.html" },
+    { "source": "/effect",              "destination": "/public/effect.html" },
+    { "source": "/login",               "destination": "/public/login.html" },
+    { "source": "/app",                 "destination": "/public/nexus-mobile-fixed.html" },
+    { "source": "/:file([^.]+\\.html)", "destination": "/public/:file" }
+  ]
+}

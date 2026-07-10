@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS · Access Terminal</title>
+    <meta name="description" content="NEXUS Advanced Life Trajectory Simulator — Secure terminal access portal">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* ══════════════════════════════════════════════════════
+           VAPORWAVE / OUTRUN DESIGN SYSTEM
+           ══════════════════════════════════════════════════════ */
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-void: #090014;
+            --fg-chrome: #E0E0E0;
+            --card-bg: rgba(26, 16, 60, 0.8);
+            --magenta: #FF00FF;
+            --cyan: #00FFFF;
+            --orange: #FF9900;
+            --border-muted: #2D1B4E;
+            --font-heading: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg-void);
+            color: var(--fg-chrome);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ── PERSPECTIVE GRID FLOOR ── */
+        .grid-floor {
+            position: fixed;
+            left: -50%;
+            bottom: -30%;
+            width: 200%;
+            height: 80%;
+            background-image:
+                linear-gradient(transparent 95%, rgba(255, 0, 255, 0.3) 95%),
+                linear-gradient(90deg, transparent 95%, rgba(255, 0, 255, 0.3) 95%);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+            mask-image: linear-gradient(to bottom, transparent 10%, black 50%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 10%, black 50%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        /* ── FLOATING SUN ── */
+        .sun-orb {
+            position: fixed;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #FF9900, #FF00FF);
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── CRT SCANLINES OVERLAY ── */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                rgba(18,16,20,0) 50%,
+                rgba(0,0,0,0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* ── RGB CHROMATIC ABERRATION ── */
+        .chromatic {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(90deg,
+                rgba(255,0,0,0.03),
+                rgba(0,255,0,0.01),
+                rgba(0,0,255,0.03)
+            );
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* ── DOT PATTERN ── */
+        .dot-pattern {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(#FF00FF 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── TERMINAL WINDOW CONTAINER ── */
+        .terminal-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 460px;
+            padding: 20px;
+            animation: terminalBoot 0.6s ease-linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes terminalBoot {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-window {
+            border: 2px solid var(--cyan);
+            background: rgba(0, 0, 0, 0.85);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── TITLE BAR ── */
+        .title-bar {
+            background: rgba(0, 255, 255, 0.08);
+            border-bottom: 1px solid var(--cyan);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-magenta { background: var(--magenta); box-shadow: 0 0 6px var(--magenta); }
+        .dot-cyan { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+        .dot-orange { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+
+        .title-bar-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* ── TERMINAL BODY ── */
+        .terminal-body {
+            padding: 32px 28px 28px;
+        }
+
+        /* ── LOGO ── */
+        .nexus-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .nexus-logo h1 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 36px;
+            letter-spacing: 10px;
+            background: linear-gradient(to right, #FF9900, #FF00FF, #00FFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 255, 0.6));
+            text-transform: uppercase;
+        }
+
+        .nexus-logo .subtitle {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: var(--magenta);
+            text-transform: uppercase;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        /* ── STATUS LINE ── */
+        .status-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 6px 0;
+            border-top: 1px solid var(--border-muted);
+            border-bottom: 1px solid var(--border-muted);
+        }
+
+        .status-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.6); }
+        }
+
+        .status-text {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--fg-chrome);
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+
+        /* ── FORM FIELDS ── */
+        .field-group {
+            margin-bottom: 18px;
+        }
+
+        .field-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--magenta);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-label .prompt {
+            color: var(--cyan);
+            font-weight: bold;
+        }
+
+        .field-input {
+            width: 100%;
+            background: #000;
+            border: none;
+            border-bottom: 2px solid var(--magenta);
+            padding: 10px 12px;
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s linear;
+        }
+
+        .field-input::placeholder {
+            color: rgba(255, 0, 255, 0.35);
+            font-size: 13px;
+        }
+
+        .field-input:focus {
+            border-bottom-color: var(--cyan);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.15);
+        }
+
+        .field-input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px #000 inset !important;
+            -webkit-text-fill-color: var(--cyan) !important;
+            caret-color: var(--cyan);
+        }
+
+        /* ── PASSWORD ROW ── */
+        .password-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .forgot-link {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: rgba(255, 0, 255, 0.4);
+            text-transform: uppercase;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s linear;
+            padding: 0;
+        }
+
+        .forgot-link:hover {
+            color: var(--cyan);
+        }
+
+        /* ── CTA BUTTON (Skewed) ── */
+        .cta-btn {
+            display: block;
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px 32px;
+            background: transparent;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transform: skewX(-12deg);
+            transition: all 0.2s linear;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn .btn-inner {
+            display: inline-block;
+            transform: skewX(12deg);
+        }
+
+        .cta-btn:hover {
+            transform: skewX(0deg);
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .cta-btn:hover .btn-inner {
+            transform: skewX(0deg);
+        }
+
+        .cta-btn:active {
+            transform: skewX(0deg) scale(0.98);
+        }
+
+        .cta-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cta-btn:disabled:hover {
+            transform: skewX(-12deg);
+            background: transparent;
+            color: var(--cyan);
+            box-shadow: none;
+        }
+
+        /* ── SECONDARY BUTTON ── */
+        .cta-btn-secondary {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px 32px;
+            background: var(--magenta);
+            border: 2px solid var(--magenta);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transform: skewX(-12deg);
+            transition: all 0.2s linear;
+        }
+
+        .cta-btn-secondary .btn-inner {
+            display: inline-block;
+            transform: skewX(12deg);
+        }
+
+        .cta-btn-secondary:hover {
+            transform: skewX(0deg) scale(1.02);
+            opacity: 0.85;
+        }
+
+        .cta-btn-secondary:hover .btn-inner {
+            transform: skewX(0deg);
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0 12px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-muted), transparent);
+        }
+
+        .divider-text {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--fg-chrome);
+            text-transform: uppercase;
+            opacity: 0.3;
+        }
+
+        /* ── SWITCH / FOOTER ROW ── */
+        .switch-row {
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .switch-row span {
+            font-size: 12px;
+            color: var(--fg-chrome);
+            opacity: 0.4;
+        }
+
+        .switch-link {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--magenta);
+            cursor: pointer;
+            transition: all 0.2s linear;
+            border: none;
+            background: none;
+            padding: 0;
+            text-transform: uppercase;
+            border-bottom: 1px solid transparent;
+        }
+
+        .switch-link:hover {
+            color: var(--cyan);
+            border-bottom-color: var(--cyan);
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+
+        /* ── BACK LINK ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--fg-chrome);
+            opacity: 0.3;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            border: none;
+            background: none;
+            padding: 0;
+            margin-top: 16px;
+            text-transform: uppercase;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: var(--cyan);
+            text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+        }
+
+        .back-link:hover .arrow {
+            transform: translateX(-4px);
+        }
+
+        .back-link .arrow {
+            transition: transform 0.2s linear;
+            font-size: 14px;
+        }
+
+        /* ── STATUS BAR (bottom of terminal) ── */
+        .status-bar {
+            border-top: 2px solid var(--border-muted);
+            background: var(--bg-void);
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-bar-text {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--fg-chrome);
+            text-transform: uppercase;
+            opacity: 0.3;
+        }
+
+        /* ── OTP INPUT BOXES ── */
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 24px 0;
+        }
+
+        .otp-box {
+            width: 48px;
+            height: 56px;
+            background: #000;
+            border: 2px solid var(--magenta);
+            color: var(--cyan);
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s linear;
+            caret-color: var(--cyan);
+        }
+
+        .otp-box:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .otp-box::placeholder {
+            color: rgba(255, 0, 255, 0.2);
+            font-size: 18px;
+        }
+
+        .otp-info {
+            text-align: center;
+            font-size: 12px;
+            color: var(--fg-chrome);
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+
+        .otp-info .email-highlight {
+            color: var(--cyan);
+            opacity: 1;
+        }
+
+        .resend-link {
+            display: block;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px 0;
+            text-transform: uppercase;
+            transition: all 0.2s linear;
+            margin-top: 10px;
+        }
+
+        .resend-link:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
+
+        .resend-link:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--cyan);
+            padding: 12px 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--cyan);
+            z-index: 9999;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s linear, opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toast.toast-error {
+            border-color: var(--magenta);
+            color: var(--magenta);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+        }
+
+        .toast.toast-success {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .toast.toast-warn {
+            border-color: var(--orange);
+            color: var(--orange);
+            box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
+        }
+
+        /* ── SPINNER ── */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── SHAKE ── */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .shake { animation: shake 0.3s linear; }
+
+        /* ── HIDDEN UTILITY ── */
+        .hidden { display: none !important; }
+
+        /* ── HINT ── */
+        .form-hint {
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--fg-chrome);
+            text-align: center;
+            margin-top: 14px;
+            opacity: 0.25;
+            text-transform: uppercase;
+        }
+
+        .form-hint kbd {
+            display: inline-block;
+            padding: 1px 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-muted);
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--cyan);
+        }
+
+        /* ── REMEMBER CHECKBOX ── */
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #000;
+            border: 2px solid var(--magenta);
+            cursor: pointer;
+            transition: all 0.2s linear;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .checkbox-row input[type="checkbox"]:checked {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
+
+        .checkbox-row input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .checkbox-row label {
+            font-size: 11px;
+            color: var(--fg-chrome);
+            cursor: pointer;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 520px) {
+            .terminal-wrapper {
+                padding: 12px;
+            }
+
+            .terminal-body {
+                padding: 24px 18px 20px;
+            }
+
+            .nexus-logo h1 {
+                font-size: 26px;
+                letter-spacing: 6px;
+            }
+
+            .otp-box {
+                width: 40px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .otp-container {
+                gap: 6px;
+            }
+
+            .cta-btn, .cta-btn-secondary {
+                font-size: 11px;
+                letter-spacing: 2px;
+                padding: 12px 16px;
+            }
+
+            .field-input {
+                font-size: 14px;
+            }
+
+            .sun-orb {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .terminal-body {
+                padding: 18px 12px 16px;
+            }
+
+            .nexus-logo h1 {
+                font-size: 22px;
+                letter-spacing: 4px;
+            }
+
+            .otp-box {
+                width: 36px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .password-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══ BACKGROUNDS ═══ -->
+    <div class="grid-floor"></div>
+    <div class="sun-orb"></div>
+    <div class="dot-pattern"></div>
+    <div class="scanlines"></div>
+    <div class="chromatic"></div>
+
+    <!-- ═══ TOAST ═══ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══ TERMINAL WINDOW ═══ -->
+    <div class="terminal-wrapper">
+        <div class="terminal-window">
+
+            <!-- Title Bar -->
+            <div class="title-bar">
+                <div class="window-dots">
+                    <span class="dot-magenta"></span>
+                    <span class="dot-cyan"></span>
+                    <span class="dot-orange"></span>
+                </div>
+                <span class="title-bar-text" id="title-bar-text">> nexus://auth/login</span>
+            </div>
+
+            <!-- Terminal Body -->
+            <div class="terminal-body">
+
+                <!-- Logo -->
+                <div class="nexus-logo">
+                    <h1>NEXUS</h1>
+                    <div class="subtitle">Advanced Life Trajectory Simulator</div>
+                </div>
+
+                <!-- Status -->
+                <div class="status-line">
+                    <div class="status-pulse"></div>
+                    <span class="status-text">System Online · Ready</span>
+                </div>
+
+                <!-- ═══ STEP 1: LOGIN / REGISTER FORM ═══ -->
+                <form id="auth-form" autocomplete="on">
+
+                    <!-- Name (register only) -->
+                    <div class="field-group hidden" id="name-group">
+                        <div class="field-label">
+                            <span class="prompt">></span> Agent Name
+                        </div>
+                        <input class="field-input" type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="field-group">
+                        <div class="field-label">
+                            <span class="prompt">></span> Email Address
+                        </div>
+                        <input class="field-input" type="email" id="email" placeholder="agent@nexus.sim" required autofocus autocomplete="email">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field-group">
+                        <div class="password-header">
+                            <div class="field-label">
+                                <span class="prompt">></span> Password
+                            </div>
+                            <button type="button" class="forgot-link" id="forgot-btn">FORGOT?</button>
+                        </div>
+                        <input class="field-input" type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+
+                    <!-- Remember (login only) -->
+                    <div class="checkbox-row" id="remember-row">
+                        <input type="checkbox" id="remember" checked>
+                        <label for="remember">Remember this device</label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="cta-btn" id="submit-btn">
+                        <span class="btn-inner" id="submit-btn-text">⚡ ACCESS NEXUS</span>
+                    </button>
+
+                </form>
+
+                <!-- ═══ STEP 2: OTP VERIFICATION (hidden initially) ═══ -->
+                <div id="otp-step" class="hidden">
+                    <div class="otp-info">
+                        Verification code sent to<br>
+                        <span class="email-highlight" id="otp-email-display"></span>
+                    </div>
+
+                    <div class="otp-container" id="otp-container">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="0" placeholder="·">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="1" placeholder="·">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="2" placeholder="·">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="3" placeholder="·">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="4" placeholder="·">
+                        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="5" placeholder="·">
+                    </div>
+
+                    <button type="button" class="cta-btn" id="verify-btn">
+                        <span class="btn-inner" id="verify-btn-text">⚡ VERIFY CODE</span>
+                    </button>
+
+                    <button type="button" class="resend-link" id="resend-btn">↻ Resend Code</button>
+                </div>
+
+                <!-- Divider -->
+                <div class="divider" id="divider-section">
+                    <div class="divider-line"></div>
+                    <span class="divider-text">or</span>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Switch Mode -->
+                <div class="switch-row" id="switch-row">
+                    <span>New to Nexus? </span>
+                    <button class="switch-link" id="switch-btn">Create Account →</button>
+                </div>
+
+                <!-- Back -->
+                <div style="text-align:center;">
+                    <button class="back-link" id="back-btn">
+                        <span class="arrow">←</span> Return to Simulator
+                    </button>
+                </div>
+
+                <!-- Hint -->
+                <div class="form-hint" id="form-hint">
+                    Press <kbd>↵</kbd> to submit
+                </div>
+
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span class="status-bar-text">NEXUS v6.0</span>
+                <span class="status-bar-text">ENCRYPTED · TLS 1.3</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════
+        //  NEXUS AUTH TERMINAL — Login + OTP Registration
+        // ═══════════════════════════════════════════════════════
+
+        const API_BASE = window.location.origin;
+
+        // ── DOM REFS ──
+        const $ = id => document.getElementById(id);
+        const authForm       = $('auth-form');
+        const nameGroup      = $('name-group');
+        const nameInput      = $('name');
+        const emailInput     = $('email');
+        const passInput      = $('password');
+        const submitBtn      = $('submit-btn');
+        const submitBtnText  = $('submit-btn-text');
+        const forgotBtn      = $('forgot-btn');
+        const switchBtn      = $('switch-btn');
+        const switchRow      = $('switch-row');
+        const backBtn        = $('back-btn');
+        const formHint       = $('form-hint');
+        const rememberRow    = $('remember-row');
+        const titleBarText   = $('title-bar-text');
+        const dividerSection = $('divider-section');
+
+        // OTP step refs
+        const otpStep        = $('otp-step');
+        const otpEmailDisp   = $('otp-email-display');
+        const otpContainer   = $('otp-container');
+        const verifyBtn      = $('verify-btn');
+        const verifyBtnText  = $('verify-btn-text');
+        const resendBtn      = $('resend-btn');
+        const otpBoxes       = otpContainer.querySelectorAll('.otp-box');
+
+        let mode = 'login'; // 'login' | 'signup' | 'otp'
+        let pendingEmail = '';
+        let pendingName = '';
+        let pendingPass = '';
+
+        // ── TOAST ──
+        function showToast(msg, type = 'success') {
+            const t = $('toast');
+            t.textContent = msg;
+            t.className = 'toast show toast-' + type;
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => { t.className = 'toast'; }, 3500);
+        }
+
+        // ── SHAKE ──
+        function shakeTerminal() {
+            const win = document.querySelector('.terminal-window');
+            win.classList.add('shake');
+            setTimeout(() => win.classList.remove('shake'), 400);
+        }
+
+        // ── MODE SWITCHING ──
+        function setMode(next) {
+            mode = next;
+
+            // Reset OTP boxes
+            otpBoxes.forEach(b => { b.value = ''; });
+
+            if (mode === 'otp') {
+                // Show OTP step, hide form
+                authForm.classList.add('hidden');
+                otpStep.classList.remove('hidden');
+                dividerSection.classList.add('hidden');
+                switchRow.classList.add('hidden');
+                rememberRow.classList.add('hidden');
+                formHint.classList.add('hidden');
+                forgotBtn.classList.add('hidden');
+                titleBarText.textContent = '> nexus://auth/verify-otp';
+                otpEmailDisp.textContent = pendingEmail;
+                setTimeout(() => otpBoxes[0].focus(), 100);
+                return;
+            }
+
+            // Show form, hide OTP
+            authForm.classList.remove('hidden');
+            otpStep.classList.add('hidden');
+            dividerSection.classList.remove('hidden');
+            switchRow.classList.remove('hidden');
+            formHint.classList.remove('hidden');
+
+            if (mode === 'signup') {
+                nameGroup.classList.remove('hidden');
+                nameInput.required = true;
+                rememberRow.classList.add('hidden');
+                forgotBtn.classList.add('hidden');
+                submitBtnText.textContent = '⚡ INITIATE REGISTRATION';
+                titleBarText.textContent = '> nexus://auth/register';
+                switchRow.innerHTML = '<span>Already registered? </span>';
+                const btn = document.createElement('button');
+                btn.className = 'switch-link';
+                btn.textContent = 'Log In →';
+                btn.addEventListener('click', () => setMode('login'));
+                switchRow.appendChild(btn);
+                formHint.innerHTML = 'Fill in all fields, then press <kbd>↵</kbd>';
+            } else {
+                nameGroup.classList.add('hidden');
+                nameInput.required = false;
+                rememberRow.classList.remove('hidden');
+                forgotBtn.classList.remove('hidden');
+                submitBtnText.textContent = '⚡ ACCESS NEXUS';
+                titleBarText.textContent = '> nexus://auth/login';
+                switchRow.innerHTML = '<span>New to Nexus? </span>';
+                const btn = document.createElement('button');
+                btn.className = 'switch-link';
+                btn.textContent = 'Create Account →';
+                btn.addEventListener('click', () => setMode('signup'));
+                switchRow.appendChild(btn);
+                formHint.innerHTML = 'Press <kbd>↵</kbd> to submit';
+            }
+        }
+
+        // Initial binding
+        switchBtn.addEventListener('click', () => setMode('signup'));
+
+        // ── LOADING STATE ──
+        function setLoading(btn, textEl, isLoading, label) {
+            btn.disabled = isLoading;
+            if (isLoading) {
+                btn._prevText = textEl.textContent;
+                textEl.innerHTML = '<span class="spinner"></span> ' + (label || 'Processing...');
+            } else {
+                textEl.textContent = btn._prevText || label || '';
+            }
+        }
+
+        // ── OTP BOX BEHAVIOR ──
+        otpBoxes.forEach((box, i) => {
+            box.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                e.target.value = val;
+                if (val && i < 5) {
+                    otpBoxes[i + 1].focus();
+                }
+                // Auto-submit when all filled
+                const full = Array.from(otpBoxes).map(b => b.value).join('');
+                if (full.length === 6) {
+                    submitOTP();
+                }
+            });
+
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !box.value && i > 0) {
+                    otpBoxes[i - 1].focus();
+                    otpBoxes[i - 1].value = '';
+                }
+            });
+
+            // Handle paste
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                for (let j = 0; j < 6 && j < paste.length; j++) {
+                    otpBoxes[j].value = paste[j];
+                }
+                const nextEmpty = Array.from(otpBoxes).findIndex(b => !b.value);
+                if (nextEmpty >= 0) otpBoxes[nextEmpty].focus();
+                else otpBoxes[5].focus();
+
+                if (paste.length >= 6) {
+                    setTimeout(() => submitOTP(), 100);
+                }
+            });
+        });
+
+        // ── SEND OTP (Step 1 of registration) ──
+        async function sendOTP(name, email, password) {
+            setLoading(submitBtn, submitBtnText, true, 'Sending OTP...');
+            try {
+                const resp = await fetch(`${API_BASE}/api/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await resp.json();
+                setLoading(submitBtn, submitBtnText, false, '⚡ INITIATE REGISTRATION');
+
+                if (!resp.ok) {
+                    showToast('✗ ' + (data.error || 'Could not send OTP.'), 'error');
+                    shakeTerminal();
+                    return;
+                }
+
+                // Store for OTP verify + resend
+                pendingEmail = email;
+                pendingName = name;
+                pendingPass = password;
+
+                showToast('✓ Verification code sent to your email.', 'success');
+                setMode('otp');
+            } catch (err) {
+                setLoading(submitBtn, submitBtnText, false, '⚡ INITIATE REGISTRATION');
+                showToast('✗ Network error — is the server running?', 'error');
+                shakeTerminal();
+            }
+        }
+
+        // ── VERIFY OTP (Step 2 of registration) ──
+        async function submitOTP() {
+            const otp = Array.from(otpBoxes).map(b => b.value).join('');
+            if (otp.length !== 6) {
+                showToast('⚠ Please enter all 6 digits.', 'warn');
+                return;
+            }
+
+            setLoading(verifyBtn, verifyBtnText, true, 'Verifying...');
+            try {
+                const resp = await fetch(`${API_BASE}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingEmail, otp })
+                });
+                const data = await resp.json();
+                setLoading(verifyBtn, verifyBtnText, false, '⚡ VERIFY CODE');
+
+                if (!resp.ok) {
+                    showToast('✗ ' + (data.error || 'Verification failed.'), 'error');
+                    shakeTerminal();
+                    otpBoxes.forEach(b => { b.value = ''; });
+                    otpBoxes[0].focus();
+                    return;
+                }
+
+                showToast('✓ Account created! Logging you in...', 'success');
+                // Auto-login
+                await doLogin(pendingEmail, pendingPass, true);
+            } catch (err) {
+                setLoading(verifyBtn, verifyBtnText, false, '⚡ VERIFY CODE');
+                showToast('✗ Network error.', 'error');
+                shakeTerminal();
+            }
+        }
+
+        // ── RESEND OTP ──
+        resendBtn.addEventListener('click', async () => {
+            if (!pendingEmail || !pendingName || !pendingPass) return;
+            resendBtn.disabled = true;
+            resendBtn.textContent = '↻ Sending...';
+            try {
+                const resp = await fetch(`${API_BASE}/api/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: pendingName, email: pendingEmail, password: pendingPass })
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    showToast('✓ New code sent!', 'success');
+                } else {
+                    showToast('✗ ' + (data.error || 'Could not resend.'), 'error');
+                }
+            } catch (err) {
+                showToast('✗ Network error.', 'error');
+            }
+            // Cooldown
+            let cd = 30;
+            resendBtn.textContent = `↻ Resend in ${cd}s`;
+            const interval = setInterval(() => {
+                cd--;
+                resendBtn.textContent = `↻ Resend in ${cd}s`;
+                if (cd <= 0) {
+                    clearInterval(interval);
+                    resendBtn.textContent = '↻ Resend Code';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        });
+
+        verifyBtn.addEventListener('click', () => submitOTP());
+
+        // ── LOGIN ──
+        async function doLogin(email, pass, skipLoadingToggle) {
+            if (!skipLoadingToggle) setLoading(submitBtn, submitBtnText, true, 'Authenticating...');
+            try {
+                const resp = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: pass })
+                });
+                const data = await resp.json();
+                if (!skipLoadingToggle) setLoading(submitBtn, submitBtnText, false, '⚡ ACCESS NEXUS');
+
+                if (!resp.ok) {
+                    showToast('✗ ' + (data.error || 'Invalid credentials.'), 'error');
+                    shakeTerminal();
+                    emailInput.style.borderBottomColor = '#FF00FF';
+                    passInput.style.borderBottomColor = '#FF00FF';
+                    setTimeout(() => {
+                        emailInput.style.borderBottomColor = '';
+                        passInput.style.borderBottomColor = '';
+                    }, 1500);
+                    return;
+                }
+
+                localStorage.setItem('nexus_token', data.token);
+                localStorage.setItem('nexus_user', JSON.stringify(data.user));
+
+                showToast(`✓ Welcome, ${data.user.name}. Redirecting...`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'nexus-mobile-fixed.html';
+                }, 1100);
+            } catch (err) {
+                if (!skipLoadingToggle) setLoading(submitBtn, submitBtnText, false, '⚡ ACCESS NEXUS');
+                showToast('✗ Network error — is the server running?', 'error');
+                shakeTerminal();
+            }
+        }
+
+        // ── FORM SUBMIT ──
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const pass = passInput.value.trim();
+
+            if (mode === 'signup') {
+                if (!name || !email || !pass) {
+                    showToast('⚠ All fields are required.', 'warn');
+                    return;
+                }
+                if (pass.length < 6) {
+                    showToast('⚠ Password must be at least 6 characters.', 'warn');
+                    return;
+                }
+                sendOTP(name, email, pass);
+            } else {
+                if (!email || !pass) {
+                    showToast('⚠ Email and password are required.', 'warn');
+                    return;
+                }
+                doLogin(email, pass);
+            }
+        });
+
+        // ── FORGOT PASSWORD ──
+        forgotBtn.addEventListener('click', () => {
+            showToast('📧 Password reset is not available yet.', 'warn');
+        });
+
+        // ── BACK BUTTON ──
+        backBtn.addEventListener('click', () => {
+            if (mode === 'otp') {
+                setMode('signup');
+                return;
+            }
+            const tok = localStorage.getItem('nexus_token');
+            window.location.href = tok ? 'nexus-mobile-fixed.html' : 'effect.html';
+        });
+
+        // ── KEYBOARD SHORTCUTS ──
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (mode === 'otp') {
+                    setMode('signup');
+                } else {
+                    backBtn.click();
+                }
+            }
+        });
+
+        // ── AUTO-FOCUS ──
+        window.addEventListener('load', () => {
+            setTimeout(() => emailInput.focus(), 300);
+        });
+
+        // ── AUTO-REDIRECT IF LOGGED IN ──
+        (function () {
+            const tok = localStorage.getItem('nexus_token');
+            const usr = localStorage.getItem('nexus_user');
+            if (tok && usr) {
+                window.location.replace('nexus-mobile-fixed.html');
+            }
+        })();
+
+        setMode('login');
+        console.log('🔐 NEXUS Terminal · OTP registration + login');
+    </script>
+
+</body>
+
+</html>
