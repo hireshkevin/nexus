@@ -108,6 +108,18 @@ body::after {
   border-radius: 0 !important;
   background: #050008 !important;
 }
+.terminal-wrapper .title-bar-text { font-size: 12px !important; }
+.terminal-wrapper .nexus-logo h1 { font-size: 40px !important; }
+.terminal-wrapper .nexus-logo .subtitle { font-size: 11px !important; }
+.terminal-wrapper .status-text, .terminal-wrapper .status-bar-text { font-size: 11px !important; }
+.terminal-wrapper .field-label { font-size: 12px !important; }
+.terminal-wrapper .field-input { font-size: 18px !important; padding: 12px 13px !important; }
+.terminal-wrapper .field-input::placeholder { font-size: 15px !important; }
+.terminal-wrapper .forgot-link, .terminal-wrapper .form-hint { font-size: 11px !important; }
+.terminal-wrapper .cta-btn { min-height: 52px; font-size: 14px !important; }
+.terminal-wrapper .switch-row span, .terminal-wrapper .switch-link { font-size: 14px !important; }
+.terminal-wrapper .otp-info { font-size: 14px !important; }
+.terminal-wrapper .resend-link { font-size: 12px !important; }
 
 /* Simulator chrome and high-value interaction surfaces. */
 #sticky-nav {
@@ -163,13 +175,45 @@ body::after {
 .method-formula, .eco-source-badge, .currency-btn.active { border-radius: 0 !important; border-color: #00ffff !important; color: #00ffff !important; background: rgba(0,255,255,.08) !important; }
 
 @media (max-width: 760px) {
-  #sticky-nav { padding: 0 12px !important; }
-  .nav-links { display: none !important; }
-  .nav-right { gap: 4px !important; }
-  .nav-right button { padding: 7px 8px !important; font-size: 8px !important; }
+  #sticky-nav {
+    height: 108px !important;
+    padding: 0 12px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 52px 56px;
+    gap: 0;
+  }
+  .nav-logo { grid-column: 1; grid-row: 1; font-size: 14px !important; letter-spacing: 4px !important; }
+  .nav-right { grid-column: 2; grid-row: 1; gap: 4px !important; }
+  #nav-user-info, .nav-right button:nth-of-type(n+4) { display: none !important; }
+  .nav-right button { min-height: 32px !important; padding: 6px 7px !important; font-size: 9px !important; letter-spacing: .8px !important; }
+  .nav-links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex !important;
+    width: 100%;
+    align-self: center;
+    gap: 5px !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link { flex: 0 0 auto; padding: 9px 11px !important; font-size: 10px !important; letter-spacing: 1px !important; }
+  #progress-bar { top: 108px !important; }
   #section-tracker { display: none !important; }
-  .hero-header { padding-top: 92px !important; }
+  .hero-header { padding-top: 136px !important; }
   .logo-main { font-size: clamp(42px, 15vw, 76px) !important; }
+
+  .terminal-wrapper { padding: 10px !important; }
+  .terminal-wrapper .terminal-body { padding: 26px 20px 22px !important; }
+  .terminal-wrapper .nexus-logo h1 { font-size: 32px !important; letter-spacing: 7px !important; }
+  .terminal-wrapper .field-label { font-size: 12px !important; letter-spacing: 2.5px !important; }
+  .terminal-wrapper .field-input { font-size: 17px !important; }
+  .terminal-wrapper .cta-btn { min-height: 50px; font-size: 13px !important; letter-spacing: 2.5px !important; }
+  .terminal-wrapper .otp-info { font-size: 13px !important; }
+  .terminal-wrapper .switch-row span, .terminal-wrapper .switch-link { font-size: 13px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
