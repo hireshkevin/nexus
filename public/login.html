@@ -123,8 +123,10 @@
             width: 100%;
             max-width: 460px;
             padding: 20px;
-            animation: terminalBoot 0.6s ease-linear forwards;
-            opacity: 0;
+            /* Keep the form visible even if an entrance animation is skipped
+               during a deployed-page restore or reduced-motion setting. */
+            animation: terminalBoot 0.6s ease-linear both;
+            opacity: 1;
         }
 
         @keyframes terminalBoot {
