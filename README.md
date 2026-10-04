@@ -1,4 +1,4 @@
-# NEXUS  Deployment Guide
+# NEXUS - Deployment Guide
 
 Deploy on **Vercel** (frontend + API) + **Supabase** (database). Both have generous free tiers.
 
